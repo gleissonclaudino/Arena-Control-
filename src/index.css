@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 120 10% 97%;
+    --foreground: 220 20% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 14%;
+
+    --primary: 145 63% 22%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 140 20% 94%;
+    --secondary-foreground: 145 63% 22%;
+
+    --muted: 120 10% 95%;
+    --muted-foreground: 220 10% 46%;
+
+    --accent: 140 20% 94%;
+    --accent-foreground: 145 63% 22%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 145 63% 22%;
+
+    --radius: 0.75rem;
+
+    /* Custom Arena Control tokens */
+    --arena-green: 145 63% 22%;
+    --arena-green-light: 145 40% 92%;
+    --arena-yellow: 45 93% 47%;
+    --arena-yellow-light: 48 100% 93%;
+    --arena-red: 0 72% 51%;
+    --arena-red-light: 0 86% 95%;
+    --arena-blue: 217 91% 60%;
+    --arena-blue-light: 217 91% 95%;
+    --arena-orange: 25 95% 53%;
+    --arena-orange-light: 25 100% 94%;
+    --arena-gray: 220 13% 91%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 10% 46%;
+    --sidebar-primary: 145 63% 22%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 140 20% 94%;
+    --sidebar-accent-foreground: 145 63% 22%;
+    --sidebar-border: 220 13% 93%;
+    --sidebar-ring: 145 63% 22%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .arena-gradient {
+    background: linear-gradient(135deg, hsl(145 63% 22%), hsl(145 63% 30%));
+  }
+  
+  .arena-gradient-dark {
+    background: linear-gradient(135deg, hsl(145 63% 18%), hsl(145 63% 24%));
+  }
+
+  .status-paid {
+    @apply bg-[hsl(var(--arena-green-light))] text-[hsl(var(--arena-green))];
+  }
+
+  .status-pending {
+    @apply bg-[hsl(var(--arena-yellow-light))] text-[hsl(var(--arena-yellow))];
+  }
+
+  .status-cancelled {
+    @apply bg-[hsl(var(--arena-red-light))] text-[hsl(var(--arena-red))];
+  }
+
+  .status-free {
+    @apply bg-muted text-muted-foreground;
+  }
+}
