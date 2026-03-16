@@ -33,13 +33,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async (userId: string) => {
-    const { data } = await supabase
+  const fetchProfile = async (userId: string, userEmail?: string, userName?: string) => {
+    const { data, error } = await supabase
       .from("profiles")
       .select("*")
       .eq("user_id", userId)
       .single();
-    setProfile(data);
+    
+    if (data) {
+      setProfile(data);
+      return;
+    }
+
+    // Profile missing — auto-create arena + profile
+    const name = userName || userEmail?.split("@")[0] || "Usuário";
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Math.random().toString(36).slice(2, 10);
+
+    const { data: arena } = await supabase
+      .from("arenas")
+      .insert({ nome: `Arena de ${name}`, slug, email: userEmail })
+      .select("id")
+      .single();
+
+    if (!arena) return;
+
+    await supabase.from("configuracoes_arena").insert({ arena_id: arena.id });
+
+    const { data: newProfile } = await supabase
+      .from("profiles")
+      .insert({ user_id: userId, arena_id: arena.id, name })
+      .select("*")
+      .single();
+
+    setProfile(newProfile);
   };
 
   useEffect(() => {
