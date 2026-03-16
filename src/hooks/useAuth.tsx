@@ -73,7 +73,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async (_event, session) => {
         setSession(session);
         if (session?.user) {
-          setTimeout(() => fetchProfile(session.user.id), 0);
+          const meta = session.user.user_metadata;
+          setTimeout(() => fetchProfile(session.user.id, session.user.email, meta?.name || meta?.full_name), 0);
         } else {
           setProfile(null);
         }
