@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, MapPin, Check, User, Phone, Mail, CheckCircle2, ChevronLeft } from "lucide-react";
+import { Loader2, MapPin, Check, User, Phone, Mail, CheckCircle2, ChevronLeft, Star } from "lucide-react";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { getDiaSemana } from "@/hooks/useFuncionamento";
@@ -208,18 +208,7 @@ export default function PublicBooking() {
   if (!arena) return <PageMessage text="Arena não encontrada" />;
 
   if (confirmed) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="text-center space-y-4 max-w-md">
-          <div className="w-16 h-16 rounded-full bg-[hsl(var(--arena-green-light))] flex items-center justify-center mx-auto">
-            <CheckCircle2 className="h-8 w-8 text-[hsl(var(--arena-green))]" />
-          </div>
-          <h1 className="text-2xl font-bold text-foreground">Reserva Realizada!</h1>
-          <p className="text-muted-foreground">Sua reserva foi registrada como <strong>pendente</strong>. A arena irá confirmar em breve.</p>
-          <p className="text-sm text-muted-foreground">{arena.nome}</p>
-        </div>
-      </div>
-    );
+    return <ConfirmationWithReview arenaId={arena.id} arenaName={arena.nome} quadraId={selectedQuadra} clienteNome={nome} />;
   }
 
   return (
@@ -426,4 +415,63 @@ function PageLoader() {
 
 function PageMessage({ text }: { text: string }) {
   return <div className="min-h-screen bg-background flex items-center justify-center"><p className="text-muted-foreground">{text}</p></div>;
+}
+
+function ConfirmationWithReview({ arenaId, arenaName, quadraId, clienteNome }: { arenaId: string; arenaName: string; quadraId: string; clienteNome: string }) {
+  const [nota, setNota] = useState(0);
+  const [comentario, setComentario] = useState("");
+  const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  const handleSendReview = async () => {
+    if (nota === 0) { toast({ title: "Selecione uma nota", variant: "destructive" }); return; }
+    setSending(true);
+    try {
+      const { error } = await supabase.from("avaliacoes").insert({
+        arena_id: arenaId, quadra_id: quadraId, cliente_nome: clienteNome,
+        nota, comentario: comentario.trim() || null,
+      });
+      if (error) throw error;
+      setSent(true);
+      toast({ title: "Obrigado pela avaliação!" });
+    } catch (e: any) {
+      toast({ title: "Erro", description: e.message, variant: "destructive" });
+    } finally { setSending(false); }
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="text-center space-y-6 max-w-md w-full">
+        <div className="w-16 h-16 rounded-full bg-[hsl(var(--arena-green-light))] flex items-center justify-center mx-auto">
+          <CheckCircle2 className="h-8 w-8 text-[hsl(var(--arena-green))]" />
+        </div>
+        <h1 className="text-2xl font-bold text-foreground">Reserva Realizada!</h1>
+        <p className="text-muted-foreground">Sua reserva foi registrada como <strong>pendente</strong>. A arena irá confirmar em breve.</p>
+        <p className="text-sm text-muted-foreground">{arenaName}</p>
+
+        {!sent ? (
+          <div className="bg-card rounded-xl border p-5 text-left space-y-4 mt-6">
+            <h3 className="text-xs font-semibold text-primary tracking-wider">AVALIE SUA EXPERIÊNCIA</h3>
+            <div className="flex gap-1 justify-center">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <button key={i} onClick={() => setNota(i)}>
+                  <Star className={`h-8 w-8 transition-colors ${i <= nota ? "fill-[hsl(var(--arena-yellow))] text-[hsl(var(--arena-yellow))]" : "text-muted-foreground/30"}`} />
+                </button>
+              ))}
+            </div>
+            <textarea
+              value={comentario} onChange={(e) => setComentario(e.target.value)}
+              placeholder="Deixe um comentário (opcional)"
+              className="w-full px-4 py-2.5 rounded-xl border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring min-h-[80px]"
+            />
+            <Button onClick={handleSendReview} disabled={sending} className="w-full arena-gradient text-primary-foreground rounded-xl">
+              {sending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Star className="h-4 w-4 mr-2" />} Enviar Avaliação
+            </Button>
+          </div>
+        ) : (
+          <p className="text-sm text-[hsl(var(--arena-green))] font-medium">⭐ Obrigado pela sua avaliação!</p>
+        )}
+      </div>
+    </div>
+  );
 }

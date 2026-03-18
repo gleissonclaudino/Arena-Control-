@@ -79,6 +79,61 @@ export type Database = {
         }
         Relationships: []
       }
+      avaliacoes: {
+        Row: {
+          arena_id: string
+          cliente_nome: string
+          comentario: string | null
+          created_at: string
+          id: string
+          nota: number
+          quadra_id: string | null
+          reserva_id: string | null
+        }
+        Insert: {
+          arena_id: string
+          cliente_nome: string
+          comentario?: string | null
+          created_at?: string
+          id?: string
+          nota: number
+          quadra_id?: string | null
+          reserva_id?: string | null
+        }
+        Update: {
+          arena_id?: string
+          cliente_nome?: string
+          comentario?: string | null
+          created_at?: string
+          id?: string
+          nota?: number
+          quadra_id?: string | null
+          reserva_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "avaliacoes_arena_id_fkey"
+            columns: ["arena_id"]
+            isOneToOne: false
+            referencedRelation: "arenas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "avaliacoes_quadra_id_fkey"
+            columns: ["quadra_id"]
+            isOneToOne: false
+            referencedRelation: "quadras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "avaliacoes_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "reservas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bloqueios_agenda: {
         Row: {
           arena_id: string

@@ -10,6 +10,7 @@ import {
   UserCircle,
   Package,
   MapPin,
+  Star,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -34,6 +35,7 @@ const menuItems = [
   { title: "Pagamentos", url: "/pagamentos", icon: CreditCard },
   { title: "Financeiro", url: "/financeiro", icon: DollarSign },
   { title: "Relatórios", url: "/relatorios", icon: BarChart3 },
+  { title: "Avaliações", url: "/avaliacoes", icon: Star },
   { title: "Configurações", url: "/configuracoes", icon: Settings },
   { title: "Minha Conta", url: "/conta", icon: UserCircle },
 ];

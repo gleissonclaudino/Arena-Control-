@@ -14,6 +14,7 @@ import Financeiro from "./pages/Financeiro";
 import Clientes from "./pages/Clientes";
 import Pagamentos from "./pages/Pagamentos";
 import Relatorios from "./pages/Relatorios";
+import Avaliacoes from "./pages/Avaliacoes";
 import Configuracoes from "./pages/Configuracoes";
 import Opcionais from "./pages/Opcionais";
 import Quadras from "./pages/Quadras";
@@ -71,6 +72,7 @@ const App = () => (
             <Route path="/financeiro" element={<ProtectedRoute><Financeiro /></ProtectedRoute>} />
             <Route path="/pagamentos" element={<ProtectedRoute><Pagamentos /></ProtectedRoute>} />
             <Route path="/relatorios" element={<ProtectedRoute><Relatorios /></ProtectedRoute>} />
+            <Route path="/avaliacoes" element={<ProtectedRoute><Avaliacoes /></ProtectedRoute>} />
             <Route path="/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />
             <Route path="/opcionais" element={<ProtectedRoute><Opcionais /></ProtectedRoute>} />
             <Route path="/conta" element={<ProtectedRoute><MinhaConta /></ProtectedRoute>} />
