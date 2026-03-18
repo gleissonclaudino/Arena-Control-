@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, MapPin, Check, User, Phone, Mail, CheckCircle2, ChevronLeft } from "lucide-react";
+import { Loader2, MapPin, Check, User, Phone, Mail, CheckCircle2, ChevronLeft, Star } from "lucide-react";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { getDiaSemana } from "@/hooks/useFuncionamento";
