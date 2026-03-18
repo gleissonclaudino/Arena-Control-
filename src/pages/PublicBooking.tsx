@@ -208,18 +208,7 @@ export default function PublicBooking() {
   if (!arena) return <PageMessage text="Arena não encontrada" />;
 
   if (confirmed) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="text-center space-y-4 max-w-md">
-          <div className="w-16 h-16 rounded-full bg-[hsl(var(--arena-green-light))] flex items-center justify-center mx-auto">
-            <CheckCircle2 className="h-8 w-8 text-[hsl(var(--arena-green))]" />
-          </div>
-          <h1 className="text-2xl font-bold text-foreground">Reserva Realizada!</h1>
-          <p className="text-muted-foreground">Sua reserva foi registrada como <strong>pendente</strong>. A arena irá confirmar em breve.</p>
-          <p className="text-sm text-muted-foreground">{arena.nome}</p>
-        </div>
-      </div>
-    );
+    return <ConfirmationWithReview arenaId={arena.id} arenaName={arena.nome} quadraId={selectedQuadra} clienteNome={nome} />;
   }
 
   return (
