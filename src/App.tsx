@@ -14,6 +14,7 @@ import Financeiro from "./pages/Financeiro";
 import Clientes from "./pages/Clientes";
 import Pagamentos from "./pages/Pagamentos";
 import Relatorios from "./pages/Relatorios";
+import Avaliacoes from "./pages/Avaliacoes";
 import Configuracoes from "./pages/Configuracoes";
 import Opcionais from "./pages/Opcionais";
 import Quadras from "./pages/Quadras";
