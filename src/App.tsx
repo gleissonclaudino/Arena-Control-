@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import Index from "./pages/Index";
 import Agenda from "./pages/Agenda";
 import Reservas from "./pages/Reservas";
@@ -22,6 +23,7 @@ import MinhaConta from "./pages/MinhaConta";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import PublicBooking from "./pages/PublicBooking";
+import Renovar from "./pages/Renovar";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -29,12 +31,15 @@ const queryClient = new QueryClient();
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { session, loading } = useAuth();
-  if (loading) return (
+  const { isActive, isLoading: subLoading } = useSubscription();
+
+  if (loading || subLoading) return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <Loader2 className="h-8 w-8 animate-spin text-primary" />
     </div>
   );
   if (!session) return <Navigate to="/auth" replace />;
+  if (!isActive) return <Navigate to="/renovar" replace />;
   return <>{children}</>;
 }
 
@@ -59,6 +64,7 @@ const App = () => (
           <Routes>
             <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/renovar" element={<Renovar />} />
             <Route path="/arena/:slug/reservar" element={<PublicBooking />} />
             <Route path="/reservar/:slug" element={<PublicBooking />} />
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
