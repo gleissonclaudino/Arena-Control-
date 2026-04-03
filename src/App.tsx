@@ -64,6 +64,7 @@ const App = () => (
           <Routes>
             <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/renovar" element={<Renovar />} />
             <Route path="/arena/:slug/reservar" element={<PublicBooking />} />
             <Route path="/reservar/:slug" element={<PublicBooking />} />
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
