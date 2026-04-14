@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 
 interface Profile {
   id: string;
@@ -33,61 +32,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async (userId: string, userEmail?: string, userName?: string) => {
-    const { data, error } = await supabase
+  const fetchProfile = async (userId: string) => {
+    const { data } = await supabase
       .from("profiles")
       .select("*")
       .eq("user_id", userId)
       .single();
-    
-    if (data) {
-      setProfile(data);
+
+    // ❌ NÃO CRIAR CONTA AUTOMÁTICA
+    if (!data) {
+      setProfile(null);
       return;
     }
 
-    // Profile missing — auto-create arena + profile
-    const name = userName || userEmail?.split("@")[0] || "Usuário";
-    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Math.random().toString(36).slice(2, 10);
-
-    const { data: arena } = await supabase
-      .from("arenas")
-      .insert({ nome: `Arena de ${name}`, slug, email: userEmail })
-      .select("id")
-      .single();
-
-    if (!arena) return;
-
-    await supabase.from("configuracoes_arena").insert({ arena_id: arena.id });
-
-    const { data: newProfile } = await supabase
-      .from("profiles")
-      .insert({ user_id: userId, arena_id: arena.id, name })
-      .select("*")
-      .single();
-
-    setProfile(newProfile);
+    setProfile(data);
   };
 
   useEffect(() => {
+    const currentPath = window.location.pathname;
+
+    // 🔓 LIBERA PÁGINA PÚBLICA (RESERVA SEM LOGIN)
+    if (currentPath.includes("/arena/")) {
+      setLoading(false);
+      return;
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setSession(session);
+
         if (session?.user) {
-          const meta = session.user.user_metadata;
-          setTimeout(() => fetchProfile(session.user.id, session.user.email, meta?.name || meta?.full_name), 0);
+          fetchProfile(session.user.id);
         } else {
           setProfile(null);
         }
+
         setLoading(false);
       }
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+
       if (session?.user) {
-        const meta = session.user.user_metadata;
-        fetchProfile(session.user.id, session.user.email, meta?.name || meta?.full_name);
+        fetchProfile(session.user.id);
       }
+
       setLoading(false);
     });
 
