@@ -42,8 +42,8 @@ export default function Configuracoes() {
     await updateConfig.mutateAsync({ horario_abertura: abertura, horario_fechamento: fechamento, tempo_minimo_reserva: tempoMinimo, intervalo_reserva: intervalo, permitir_reserva_online: reservaOnline });
   };
 
-  const publicLink = arena?.slug ? `${window.location.origin}/arena/${arena.slug}/reservar` : "";
-  const copyLink = () => { navigator.clipboard.writeText(publicLink); toast({ title: "Link copiado!" }); };
+const BASE_URL = "https://id-preview--39d624ec-e3b6-4860-902c-1be2a38abcf4.lovable.app";
+const publicLink = arena?.slug ? `${BASE_URL}/arena/${arena.slug}/reservar` : "";
 
   if (loadingArena) return <Layout><div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div></Layout>;
 
