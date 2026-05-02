@@ -86,6 +86,16 @@ export default function Configuracoes() {
 
         <DiasSection />
 
+        {arena?.codigo && (
+          <Section title="CÓDIGO DA ARENA">
+            <p className="text-xs text-muted-foreground">Envie este código para seus clientes fazerem reservas pelo app.</p>
+            <div className="flex items-center gap-2">
+              <input readOnly value={arena.codigo} className="flex-1 px-4 py-2.5 rounded-xl border bg-muted text-lg font-bold tracking-widest text-center text-foreground focus:outline-none" />
+              <Button variant="outline" size="sm" onClick={copyCodigo} className="rounded-xl gap-1"><Copy className="h-4 w-4" /> Copiar</Button>
+            </div>
+          </Section>
+        )}
+
         {publicLink && (
           <Section title="LINK PÚBLICO">
             <div className="flex items-center gap-2">
