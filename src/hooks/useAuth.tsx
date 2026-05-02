@@ -5,8 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 interface Profile {
   id: string;
   user_id: string;
-  arena_id: string;
+  arena_id: string | null;
   name: string | null;
+  role: "client" | "owner";
 }
 
 interface AuthContextType {
@@ -14,6 +15,7 @@ interface AuthContextType {
   user: User | null;
   profile: Profile | null;
   arenaId: string | null;
+  role: "client" | "owner" | null;
   loading: boolean;
   signOut: () => Promise<void>;
 }
@@ -23,6 +25,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   profile: null,
   arenaId: null,
+  role: null,
   loading: true,
   signOut: async () => {},
 });
@@ -37,47 +40,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .from("profiles")
       .select("*")
       .eq("user_id", userId)
-      .single();
-
-    // ❌ NÃO CRIAR CONTA AUTOMÁTICA
-    if (!data) {
-      setProfile(null);
-      return;
-    }
-
-    setProfile(data);
+      .maybeSingle();
+    setProfile((data as Profile) ?? null);
   };
 
   useEffect(() => {
-    const currentPath = window.location.pathname;
-
-    // 🔓 LIBERA PÁGINA PÚBLICA (RESERVA SEM LOGIN)
-    if (currentPath.includes("/arena/")) {
-      setLoading(false);
-      return;
-    }
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
         setSession(session);
-
         if (session?.user) {
-          fetchProfile(session.user.id);
+          setTimeout(() => fetchProfile(session.user.id), 0);
         } else {
           setProfile(null);
         }
-
         setLoading(false);
       }
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
-
+      if (session?.user) fetchProfile(session.user.id);
       setLoading(false);
     });
 
@@ -97,6 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user: session?.user ?? null,
         profile,
         arenaId: profile?.arena_id ?? null,
+        role: profile?.role ?? null,
         loading,
         signOut,
       }}
