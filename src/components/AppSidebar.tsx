@@ -66,13 +66,13 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => {
-                const isActive = location.pathname === item.url ||
+                const active = location.pathname === item.url ||
                   (item.url !== "/painel" && location.pathname.startsWith(item.url));
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild isActive={active}>
                       <NavLink to={item.url} end={item.url === "/painel"}
-                        className={`hover:bg-accent transition-colors ${isActive ? "bg-accent text-accent-foreground font-medium" : "text-sidebar-foreground"}`}
+                        className={`hover:bg-accent transition-colors ${active ? "bg-accent text-accent-foreground font-medium" : "text-sidebar-foreground"}`}
                         activeClassName="bg-accent text-accent-foreground font-medium">
                         <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
                         {!collapsed && <span>{item.title}</span>}
