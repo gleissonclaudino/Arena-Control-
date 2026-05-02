@@ -46,6 +46,7 @@ export type Database = {
       arenas: {
         Row: {
           cidade: string | null
+          codigo: string
           created_at: string
           email: string | null
           endereco: string | null
@@ -57,6 +58,7 @@ export type Database = {
         }
         Insert: {
           cidade?: string | null
+          codigo: string
           created_at?: string
           email?: string | null
           endereco?: string | null
@@ -68,6 +70,7 @@ export type Database = {
         }
         Update: {
           cidade?: string | null
+          codigo?: string
           created_at?: string
           email?: string | null
           endereco?: string | null
@@ -390,24 +393,27 @@ export type Database = {
       }
       profiles: {
         Row: {
-          arena_id: string
+          arena_id: string | null
           created_at: string
           id: string
           name: string | null
+          role: Database["public"]["Enums"]["user_role"]
           user_id: string
         }
         Insert: {
-          arena_id: string
+          arena_id?: string | null
           created_at?: string
           id?: string
           name?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           user_id: string
         }
         Update: {
-          arena_id?: string
+          arena_id?: string | null
           created_at?: string
           id?: string
           name?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           user_id?: string
         }
         Relationships: [
@@ -663,10 +669,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      gen_arena_codigo: { Args: never; Returns: string }
       get_user_arena_id: { Args: { _user_id: string }; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      user_role: "client" | "owner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -793,6 +800,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["client", "owner"],
+    },
   },
 } as const
