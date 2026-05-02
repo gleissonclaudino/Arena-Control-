@@ -2,7 +2,7 @@ import { LayoutDashboard, CalendarDays, Plus, DollarSign, Settings } from "lucid
 import { useLocation, useNavigate } from "react-router-dom";
 
 const tabs = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/" },
+  { label: "Dashboard", icon: LayoutDashboard, path: "/painel" },
   { label: "Agenda", icon: CalendarDays, path: "/agenda" },
   { label: "", icon: Plus, path: "/reservas/nova", isCenter: true },
   { label: "Financeiro", icon: DollarSign, path: "/financeiro" },
@@ -16,8 +16,8 @@ export function BottomNav() {
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t flex items-center justify-around h-16 px-2">
       {tabs.map((tab) => {
-        const isActive = tab.path === "/" 
-          ? location.pathname === "/" 
+        const isActive = tab.path === "/painel" 
+          ? location.pathname === "/painel" 
           : location.pathname.startsWith(tab.path);
 
         if (tab.isCenter) {

@@ -24,13 +24,16 @@ import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import PublicBooking from "./pages/PublicBooking";
 import Renovar from "./pages/Renovar";
+import Welcome from "./pages/Welcome";
+import ClienteAuth from "./pages/ClienteAuth";
+import ClienteCodigo from "./pages/ClienteCodigo";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { session, loading } = useAuth();
+  const { session, profile, loading, role } = useAuth();
   const { isActive, isLoading: subLoading } = useSubscription();
 
   if (loading || subLoading) return (
@@ -39,18 +42,21 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     </div>
   );
   if (!session) return <Navigate to="/auth" replace />;
+  if (role && role !== "owner") return <Navigate to="/cliente/codigo" replace />;
+  if (!profile?.arena_id) return <Navigate to="/auth" replace />;
   if (!isActive) return <Navigate to="/renovar" replace />;
   return <>{children}</>;
 }
 
 function AuthRoute({ children }: { children: React.ReactNode }) {
-  const { session, loading } = useAuth();
+  const { session, role, loading } = useAuth();
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <Loader2 className="h-8 w-8 animate-spin text-primary" />
     </div>
   );
-  if (session) return <Navigate to="/" replace />;
+  if (session && role === "owner") return <Navigate to="/painel" replace />;
+  if (session && role === "client") return <Navigate to="/cliente/codigo" replace />;
   return <>{children}</>;
 }
 
@@ -62,12 +68,15 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            <Route path="/" element={<Welcome />} />
+            <Route path="/cliente/login" element={<ClienteAuth />} />
+            <Route path="/cliente/codigo" element={<ClienteCodigo />} />
             <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/renovar" element={<Renovar />} />
             <Route path="/arena/:slug/reservar" element={<PublicBooking />} />
             <Route path="/reservar/:slug" element={<PublicBooking />} />
-            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+            <Route path="/painel" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             <Route path="/agenda" element={<ProtectedRoute><Agenda /></ProtectedRoute>} />
             <Route path="/reservas" element={<ProtectedRoute><Reservas /></ProtectedRoute>} />
             <Route path="/reservas/nova" element={<ProtectedRoute><NovaReserva /></ProtectedRoute>} />

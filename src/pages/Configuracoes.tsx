@@ -42,8 +42,9 @@ export default function Configuracoes() {
     await updateConfig.mutateAsync({ horario_abertura: abertura, horario_fechamento: fechamento, tempo_minimo_reserva: tempoMinimo, intervalo_reserva: intervalo, permitir_reserva_online: reservaOnline });
   };
 
-const publicLink = arena?.slug ? ${window.location.origin}/arena/${arena.slug}/reservar : ""; const copyLink = () => { navigator.clipboard.writeText(publicLink); toast({ title: "Link copiado!" }); };
-};
+  const publicLink = arena?.slug ? `${window.location.origin}/arena/${arena.slug}/reservar` : "";
+  const copyLink = () => { navigator.clipboard.writeText(publicLink); toast({ title: "Link copiado!" }); };
+  const copyCodigo = () => { if (arena?.codigo) { navigator.clipboard.writeText(arena.codigo); toast({ title: "Código copiado!" }); } };
 
   if (loadingArena) return <Layout><div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div></Layout>;
 
@@ -84,6 +85,16 @@ const publicLink = arena?.slug ? ${window.location.origin}/arena/${arena.slug}/r
         </Section>
 
         <DiasSection />
+
+        {arena?.codigo && (
+          <Section title="CÓDIGO DA ARENA">
+            <p className="text-xs text-muted-foreground">Envie este código para seus clientes fazerem reservas pelo app.</p>
+            <div className="flex items-center gap-2">
+              <input readOnly value={arena.codigo} className="flex-1 px-4 py-2.5 rounded-xl border bg-muted text-lg font-bold tracking-widest text-center text-foreground focus:outline-none" />
+              <Button variant="outline" size="sm" onClick={copyCodigo} className="rounded-xl gap-1"><Copy className="h-4 w-4" /> Copiar</Button>
+            </div>
+          </Section>
+        )}
 
         {publicLink && (
           <Section title="LINK PÚBLICO">
