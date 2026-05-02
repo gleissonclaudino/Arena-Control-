@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Dashboard", url: "/painel", icon: LayoutDashboard },
   { title: "Agenda", url: "/agenda", icon: CalendarDays },
   { title: "Reservas", url: "/reservas", icon: BookOpen },
   { title: "Clientes", url: "/clientes", icon: Users },
@@ -67,11 +67,11 @@ export function AppSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => {
                 const isActive = location.pathname === item.url ||
-                  (item.url !== "/" && location.pathname.startsWith(item.url));
+                  (item.url !== "/painel" && location.pathname.startsWith(item.url));
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <NavLink to={item.url} end={item.url === "/"}
+                    <SidebarMenuButton asChild isActive={active}>
+                      <NavLink to={item.url} end={item.url === "/painel"}
                         className={`hover:bg-accent transition-colors ${isActive ? "bg-accent text-accent-foreground font-medium" : "text-sidebar-foreground"}`}
                         activeClassName="bg-accent text-accent-foreground font-medium">
                         <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
